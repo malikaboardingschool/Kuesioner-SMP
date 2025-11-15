@@ -4,440 +4,315 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Survei Lingkungan Belajar MBS</title>
-    <!-- Memuat Tailwind CSS --><script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Konfigurasi font Inter dari Tailwind */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        html {
+        body {
             font-family: 'Inter', sans-serif;
             scroll-behavior: smooth;
         }
-
-        /* Animasi untuk Running Text (Marquee) */
-        .marquee-text {
+        /* Efek blur untuk modal */
+        .backdrop-blur-sm {
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+        /* Animasi untuk running text */
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        .animate-marquee {
             display: inline-block;
             white-space: nowrap;
-            padding-left: 100%;
-            animation: marquee 50s linear infinite; /* Diperlambat dari 30s ke 50s */
+            animation: marquee 50s linear infinite;
         }
-        @keyframes marquee {
-            0% { transform: translateX(0%); }
-            100% { transform: translateX(-200%); }
-        }
-
-        /* Animasi fade-in sederhana */
-        .fade-in {
-            animation: fadeIn 0.5s ease-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Styling untuk radio button kustom */
+        /* Menyembunyikan radio button asli */
         input[type="radio"] {
-            accent-color: #3b82f6; /* Biru (disesuaikan untuk tema gelap) */
+            opacity: 0;
+            position: fixed;
+            width: 0;
         }
-
-        /* * EFEK VISUAL BARU: Style untuk opsi yang dipilih
-         * Ini akan ditambahkan/dihapus oleh JavaScript
-        */
-        .selected-label {
-            background-color: #1d4ed8; /* bg-blue-700 */
-            border-color: #3b82f6 !important; /* border-blue-500, !important untuk override */
-            transform: scale(1.01); /* Efek 'pop' kecil saat dipilih */
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        /* Styling untuk label kustom (pilihan jawaban) */
+        input[type="radio"]:checked + label {
+            transform: scale(1.03);
+            background-color: #2563eb; /* bg-blue-600 */
+            border-color: #1d4ed8; /* border-blue-700 */
+            color: white;
+            box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.5);
         }
-        .selected-label span {
-            font-weight: 600; /* semibold */
-            color: #ffffff;
+        input[type="radio"]:focus + label {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
         }
     </style>
 </head>
 <body class="bg-gray-900">
 
     <!-- Header -->
-    <header class="bg-white shadow-lg border-b border-gray-200 sticky top-0 z-50"> <!-- Diubah ke tema cerah (putih) -->
+    <header class="bg-white shadow-lg border-b border-gray-200 sticky top-0 z-50">
         <div class="container mx-auto flex items-center justify-between p-4">
-            <!-- Logo - DIUBAH: Menambahkan kelas rounded-full -->
+            <!-- Logo -->
             <img src="https://iili.io/FsLlXA7.png" alt="Logo Malika IBS" class="h-12 md:h-16 w-auto rounded-full">
             
-            <!-- Judul -->
-            <div class="text-right">
-                <!-- DIUBAH: Mengembalikan gradasi ke pink-ungu-cyan sesuai gambar -->
+            <!-- Judul (Tengah) -->
+            <div class="text-center">
                 <h1 class="text-xl md:text-3xl font-bold bg-gradient-to-r from-pink-500 via-purple-600 to-cyan-400 text-transparent bg-clip-text">
                     Survei Lingkungan Belajar MBS
                 </h1>
-                <p class="text-sm md:text-lg text-gray-600"> <!-- Diubah ke text-gray-600 agar terlihat di bg putih -->
+                <p class="text-sm md:text-lg text-gray-600">
                     Malika Islamic Boarding School
                 </p>
             </div>
+
+            <!-- Div Kosong untuk menyeimbangkan (agar judul pas di tengah) -->
+            <div class="h-12 md:h-16" style="width: auto; min-width: 64px;"></div>
         </div>
     </header>
 
-    <!-- Running Text (DIPINDAHKAN KEMBALI KE ATAS) -->
-    <!-- Konten Utama: Formulir Survei --><main class="container mx-auto py-8 px-4">
-        <!-- Diubah: Menambahkan efek semi-transparan, border, dan backdrop-blur untuk tampilan modern (glassmorphism) --><form id="surveyForm" class="bg-gray-800/90 backdrop-blur-sm border border-gray-700/50 p-6 md:p-10 rounded-xl shadow-2xl max-w-4xl mx-auto fade-in"> 
-
-            <!-- Bagian Data Santri --><fieldset>
-                <!-- Diubah: Menggunakan warna aksen (biru) untuk judul dan border --><legend class="text-2xl md:text-3xl font-semibold text-blue-400 mb-6 pb-2 border-b-2 border-blue-700/50"> 
-                    Data Santri
-                </legend>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                    <!-- Dropdown Kelas --><div>
-                        <label for="classSelect" class="block text-sm font-medium text-gray-300 mb-2">Kelas</label> <!-- Diubah ke text-gray-300 --><select id="classSelect" name="kelas" required
-                            class="w-full p-3 border border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-700 text-white focus:bg-gray-600"> <!-- Diubah ke tema gelap --><option value="" disabled selected>-- Pilih Kelas --</option>
-                        </select>
-                    </div>
-                    <!-- Dropdown Nama --><div>
-                        <label for="nameSelect" class="block text-sm font-medium text-gray-300 mb-2">Nama Santri</label> <!-- Diubah ke text-gray-300 --><select id="nameSelect" name="nama" required disabled
-                            class="w-full p-3 border border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-600 disabled:text-gray-400 disabled:cursor-not-allowed bg-gray-700 text-white focus:bg-gray-600"> <!-- Diubah ke tema gelap --><option value="" disabled selected>-- Pilih Nama --</option>
-                        </select>
-                    </div>
-                </div>
-            </fieldset>
-
-            <!-- Bagian Kuesioner --><fieldset>
-                <!-- Diubah: Menggunakan warna aksen (biru) untuk judul dan border --><legend class="text-2xl md:text-3xl font-semibold text-blue-400 mb-6 pb-2 border-b-2 border-blue-700/50">
-                    Kuesioner
-                </legend>
-                <div id="questionsContainer" class="space-y-8">
-                    <!-- Pertanyaan akan di-generate oleh JavaScript --></div>
-            </fieldset>
-
-            <!-- Tombol Submit --><div class="mt-10 pt-6 border-t border-gray-600"> <!-- Diubah: border-gray-600 --><!-- Diubah: Menggunakan gradien, hover yang lebih jelas, dan efek transform --><button type="submit" id="submitButton"
-                    class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold text-lg p-4 rounded-lg shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-400 transform hover:scale-[1.02] hover:shadow-xl focus:scale-[1.02]">
-                    Kirim Jawaban Survei
-                </button>
-                
-                <!-- Indikator Loading --><div id="loadingIndicator" class="hidden text-center mt-4">
-                    <p class="text-blue-400 font-medium">Mengirim data, mohon tunggu...</p> <!-- Diubah ke text-blue-400 --></div>
-            </div>
-        </form>
-    </main>
-
-    <!-- Running Text (DIPINDAHKAN KE SINI) --><!-- Blok 'marquee-container' yang sebelumnya ada di sini telah dipindahkan ke atas (setelah </header>) --><!-- Footer --><footer class="text-center py-6 text-gray-400 text-sm"> <!-- Diubah ke text-gray-400 -->&copy; <span id="currentYear"></span> Malika Islamic Boarding School. All rights reserved.
-    </footer>
-
-    <!-- Modal untuk Pesan Sukses/Error --><div id="messageModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50 hidden fade-in">
-        <div class="bg-gray-800 rounded-lg shadow-xl max-w-sm w-full p-6 text-center"> <!-- Diubah ke bg-gray-800 --><h3 id="modalTitle" class="text-2xl font-bold mb-4 text-white"></h3> <!-- Ditambah text-white --><p id="modalMessage" class="text-gray-300 mb-6"></p> <!-- Diubah ke text-gray-300 --><button id="closeModalButton"
-                class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition-colors">
-                Tutup
-            </button>
+    <!-- Running Text -->
+    <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-3 shadow-md overflow-hidden">
+        <div class="animate-marquee">
+            <span class="font-semibold text-lg">Isilah dengan jujur sesuai keadaan sebenarnya. Tidak ada jawaban benar atau salah. Semua jawaban bersifat rahasia.</span>
         </div>
     </div>
 
-    <!-- 
-    ==================================================================
-    PENTING: INSTRUKSI UNTUK GOOGLE APPS SCRIPT (BACKEND)
-    ==================================================================
+    <!-- Konten Utama -->
+    <main class="container mx-auto p-4 md:p-8">
+        
+        <form id="surveyForm" class="bg-gray-800 bg-opacity-80 backdrop-blur-sm border border-gray-700 rounded-2xl shadow-2xl p-6 md:p-10 max-w-4xl mx-auto">
+            
+            <!-- Bagian Data Santri -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-blue-400 border-b-2 border-blue-400 pb-2 mb-6">Data Santri</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Dropdown Kelas -->
+                    <div>
+                        <label for="kelas" class="block text-sm font-medium text-gray-300 mb-2">Pilih Kelas</label>
+                        <select id="kelas" name="kelas" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
+                            <option value="">-- Pilih Kelas --</option>
+                            <option value="7A Putra">7A Putra</option>
+                            <option value="7B Putra">7B Putra</option>
+                            <option value="7A Putri">7A Putri</option>
+                            <option value="7B Putri">7B Putri</option>
+                        </select>
+                    </div>
+                    <!-- Dropdown Nama Santri -->
+                    <div>
+                        <label for="nama" class="block text-sm font-medium text-gray-300 mb-2">Nama Santri</label>
+                        <select id="nama" name="nama" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200" disabled>
+                            <option value="">-- Pilih Nama --</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
 
-    Agar formulir ini dapat terhubung ke Google Spreadsheet, Anda HARUS
-    mengikuti langkah-langkah berikut:
+            <!-- Bagian Kuesioner -->
+            <div>
+                <h2 class="text-2xl font-bold text-blue-400 border-b-2 border-blue-400 pb-2 mb-6">Kuesioner</h2>
+                <div id="questionsContainer" class="space-y-8">
+                    <!-- Pertanyaan akan dimuat di sini oleh JavaScript -->
+                </div>
+            </div>
 
-    1.  BUAT SPREADSHEET BARU:
-        -   Buka Google Sheets (sheets.google.com).
-        -   Buat spreadsheet baru. Beri nama, misalnya "Respons Survei MBS".
-        -   Salin (copy) ID Spreadsheet. ID ini ada di URL:
-            https://docs.google.com/spreadsheets/d/ [INI ADALAH ID-NYA] /edit
-        -   Beri nama sheet (tab) pertama di dalamnya "Responses".
+            <!-- Tombol Kirim -->
+            <div class="mt-10 pt-6 border-t border-gray-700 text-center">
+                <button type="submit" id="submitButton" class="w-full md:w-auto bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-3 px-12 rounded-lg shadow-lg hover:shadow-blue-500/50 transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-400 focus:ring-opacity-50">
+                    <span id="submitText">Kirim Jawaban</span>
+                    <!-- Ikon Loading (Spinner) -->
+                    <svg id="loadingSpinner" class="animate-spin h-5 w-5 text-white mx-auto hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </button>
+            </div>
 
-    2.  BUAT GOOGLE APPS SCRIPT:
-        -   Buka Google Apps Script (script.google.com).
-        -   Buat "Proyek baru".
-        -   Hapus semua kode di file `Code.gs`.
-        -   Salin dan tempel (paste) semua kode dari file `Code.gs` yang saya sediakan ke dalam file ini.
+        </form>
+    </main>
 
-    3.  KONFIGURASI SCRIPT:
-        -   Di dalam file `Code.gs` yang baru Anda tempel, cari baris:
-            `const SPREADSHEET_ID = "MASUKKAN_ID_SPREADSHEET_ANDA_DI_SINI";`
-        -   Ganti `MASUKKAN_ID_SPREADSHEET_ANDA_DI_SINI` dengan ID Spreadsheet yang Anda salin di Langkah 1.
+    <!-- Footer -->
+    <footer class="text-center p-6 mt-12">
+        <p class="text-gray-500 text-sm">&copy; 2024 Malika Islamic Boarding School. All rights reserved.</p>
+    </footer>
 
-    4.  DEPLOY SCRIPT (SEBARKAN):
-        -   Di Apps Script, klik "Terapkan" (Deploy) > "Penerapan baru" (New deployment).
-        -   Klik ikon roda gigi (Settings) di sebelah "Pilih jenis" (Select type) dan pilih "Aplikasi Web" (Web app).
-        -   Di bagian "Konfigurasi":
-            -   Deskripsi: "Backend Survei MBS"
-            -   Jalankan sebagai (Execute as): "Saya" (Me)
-            -   Siapa yang memiliki akses (Who has access): "Siapa saja" (Anyone) - INI PENTING!
-        -   Klik "Terapkan" (Deploy).
-        -   Google akan meminta izin. Izinkan (Allow access).
-        -   Setelah selesai, Google akan memberi Anda "URL Aplikasi Web". SALIN URL ini.
-
-    5.  HUBUNGKAN HTML DENGAN SCRIPT:
-        -   Kembali ke file HTML ini (index.html).
-        -   Cari baris di bawah ini (di dalam tag <script>):
-            `const SCRIPT_URL = "MASUKKAN_URL_APPS_SCRIPT_ANDA_DI_SINI";`
-        -   Tempel (paste) URL Aplikasi Web yang Anda salin dari Langkah 4.
-
-    SELESAI! Sekarang formulir Anda terhubung ke Google Sheet.
-    Setiap kali seseorang mengirimkan survei, data akan muncul di sheet "Responses".
-    
-    ==================================================================
-    --><script>
-        // ==========================================================
-        // !! PENTING !!
-        // Tempel URL Aplikasi Web dari Google Apps Script Anda di sini.
-        // Lihat instruksi di atas.
-        // ==========================================================
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwxDrMAFy52G14WpBjIkIW8WAe2uPfGyneLNltjEaIHR6lkn0URxrD4ytl-DJqfp_HVpw/exec";
-        // ==========================================================
+    <!-- Modal Notifikasi -->
+    <div id="notificationModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden transition-opacity duration-300">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-sm mx-auto p-6 md:p-8 text-center border-t-4 border-blue-500 transform transition-all duration-300 scale-95 opacity-0" id="modalContent">
+            <!-- Sukses -->
+            <div id="modalSuccess" class="hidden">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">Terima Kasih!</h3>
+                <p class="text-gray-600">Jawaban Anda telah berhasil dikirim. Formulir akan di-reset untuk santri berikutnya.</p>
+            </div>
+            <!-- Gagal -->
+            <div id="modalError" class="hidden">
+                <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-10 h-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">Terjadi Kesalahan</h3>
+                <p id="errorMessage" class="text-gray-600">Gagal mengirim jawaban. Silakan periksa koneksi Anda dan coba lagi.</p>
+                <button id="closeErrorButton" class="mt-6 bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-6 rounded-lg transition-all duration-200">Tutup</button>
+            </div>
+        </div>
+    </div>
 
 
-        // Data Santri
-        const studentData = {
-            "Kelas 7 A Putra": [
-                "Athariz Chalief Saputra", "Ahmad Khomaini", "Al Athar Ghaizan Nobel", "Alzabar Akbar", "Arya Devano",
-                "Abyan Dzaky Hafizh Kurniawan", "Fadil Syafif Nugroho Sukri", "Fakhri Muhammad Mumtaz",
-                "I Komang Raditiya Novian Pradana Putra", "Ibad Najwan", "Ibni Shidqie Al Mumtazhar",
-                "Kenzie Dastan Shalahuddin Zan", "Khaerul A'Zam Ismail", "Khairiy Rezki Adhinata", "Lionel Pratama Nugroho",
-                "Mahfidz Ardiansyah", "Mohamad Akromul Azam", "Mohammad Ezra Rafiandhika", "Muhammad Akhtar Al Hisyam",
-                "Muhammad Al Fatih", "Muhammad Fatir Albahri", "Muhammad Naufal Rizki", "Muhammad Syamil At Tsauri",
-                "Nauval Abdul Rasyid", "Pranatantra Fachrie", "Rajata Ibnu Faqih", "Reygi Antajun Hikaru",
-                "Rifqi Irfan Hamizan", "Umar Al Jailaani", "Yossa Dzulfi Andrean", "Zahran Sahil", "Rizky Setyo Nugroho",
-                "Teuku Rizqi Mutha"
-            ],
-            "Kelas 7 B Putra": [
-                "Abidzar Nuha Wafi", "Ach. Raihan Faiz As-Sudaisyi", "Ahmad Nazmu Durori", "Akbar Nurfatah Arsadi",
-                "Akhdan Athaya Putra Zulfikar", "Al Barra Ananta Putra", "Annabighoh Syabanu Gunawan",
-                "Arrais Mahardika Rusli", "Athaya Kaysan Hakim", "Aufa Gilang Pratama", "Bilal Abdul Aslam",
-                "Bintang Dasilva Ibrahim", "Brilliant Alziddan Mustofa", "Denny Maulana Yusuf", "Fathir Muhammad Fadhilah",
-                "Haikal Ahfwan", "Harry Harsya Shiddiq", "Ifan Sofyan", "Kenzie Adelio Tristan", "Khairul Walif",
-                "Luthfirrahman Nafis Hananto", "Muhammad Al-Gaza Putra Dewian", "Muhammad Arafa Ekiyano Febrian",
-                "Muhammad Dilfa Fattan", "Muhammad Fahriansyah", "Muhammad Fathan Toriq", "Muhammad Haikal Al Faisya",
-                "Muhammad Najetullah", "Muhammad Raditya Fauzan", "Muhammad Waldan", "Rayhan Faiz Abdillah Hadiyanto",
-                "Sultan Fatih Setiawan", "Zhafran Tata Hidayat"
-            ],
-            "Kelas 7 A Putri": [
-                "Adara Riyanti", "Aghniya Musamma Harahap", "Ahla Amany Maulidya", "Alivia Zahratukanza",
-                "Alya Ruby Salimah", "Ameera Syahida Ajie", "Asyifa Mahira Lubis", "Bilqis Ghaisani Ahza",
-                "Callysta Lareina Nabiha", "Cordelia Krisna Widyantari", "Deyanna Abigail Baligha Zephania",
-                "Fathya Caliana", "Filzah Ghaisani Fikriyah", "Indhieswara Maharani", "Kanaya Athalla Dzakiyyah",
-                "Kawa'Iba Puti Firmansyah", "Keisha Sahila Az Zahra", "Khansa Ghina Rachmani", "Mehira Mehrnaz Multazam",
-                "Nadiya Fajria Salsabila", "Novilly Azwan", "Putri Mutia Rahmi", "Queenisa Yumna Zahirah",
-                "Rita Madinatul Arofah", "Saffanah Saafia Zahirah", "Shelby Sinar Islamadina", "Shira Rizkia Adara",
-                "Siti Shofa Aulia Rahman", "Syifa Anindya", "Talita Himayatul Kamilah", "Talita Khansa Saputra",
-                "Yukqiu Natasha Ardi", "Zivana Lay"
-            ],
-            "Kelas 7 B Putri": [
-                "Aesha Bellvania Kirana", "Aira Fitriani Azzahra", "Aisyah Fahira Husna", "Alya Zahra Nabila",
-                "Ameera Isnain Setiadi", "Aulia Zahra Ibrahim", "Azizahtun Nazwa", "Ghina Bilqis Shabreen",
-                "Hafizhah Alimah", "Haninda Aulia Dayana", "Hilma Arifa Aulia Rosid", "Jihan Amira Karim",
-                "Keyla Khanza Ramadhani", "Nafisa Al Mahira", "Nailatisya Aquina Salsabilla", "Nilam Maulina Anggraini",
-                "R A Najeela Putri Widiarsa", "Rhaqueena Aleameccha Alingga", "Salsabila Zovanka", "Shakila Aulia Sakhiy",
-                "Shifa Mumtazah", "Siti Alifia Zahra", "Siti Zahwa Naura Auni", "Siti Ziarra Nur Al-Jaelani",
-                "Syafa Savira", "Syakilah Putri Oktavia", "Syakirah Rizqia Ramadani", "Tuhfatun Najwa",
-                "Vinca Fitranavira Putri", "Zhafira Nur Azzahra", "Tiara Izzatunnisa", "Kinara Rahmadania", "Tsamarah Arissa Qaireen", "Avikah Rosafitri", "Mutiah Latifah"
-            ]
+    <script>
+        // ========================================================================
+        // KONFIGURASI PENTING - WAJIB DIISI
+        // ========================================================================
+        // 1. Ganti URL ini dengan URL Web App Anda dari Google Apps Script.
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzLtojJ5K-_0uGrDEh3jXmYdxsHGhXNlIhTXjMCvCRVPmhyIPt8TM4k9qivAAd9PnC36g/exec";
+        // ========================================================================
+
+
+        // Data Nama Santri
+        const dataSantri = {
+            "7A Putra": ["Athariz Chalief Saputra", "Ahmad Khomaini", "Al Athar Ghaizan Nobel", "Alzabar Akbar", "Arya Devano", "Abyan Dzaky Hafizh Kurniawan", "Fadil Syafif Nugroho Sukri", "Fakhri Muhammad Mumtaz", "I Komang Raditiya Novian Pradana Putra", "Ibad Najwan", "Ibni Shidqie Al Mumtazhar", "Kenzie Dastan Shalahuddin Zan", "Khaerul A'Zam Ismail", "Khairiy Rezki Adhinata", "Lionel Pratama Nugroho", "Mahfidz Ardiansyah", "Mohamad Akromul Azam", "Mohammad Ezra Rafiandhika", "Muhammad Akhtar Al Hisyam", "Muhammad Al Fatih", "Muhammad Fatir Albahri", "Muhammad Naufal Rizki", "Muhammad Syamil At Tsauri", "Nauval Abdul Rasyid", "Pranatantra Fachrie", "Rajata Ibnu Faqih", "Reygi Antajun Hikaru", "Rifqi Irfan Hamizan", "Umar Al Jailaani", "Yossa Dzulfi Andrean", "Zahran Sahil", "Rizky Setyo Nugroho", "Teuku Rizqi Mutha"],
+            "7B Putra": ["Abidzar Nuha Wafi", "Ach. Raihan Faiz As-Sudaisyi", "Ahmad Nazmu Durori", "Akbar Nurfatah Arsadi", "Akhdan Athaya Putra Zulfikar", "Al Barra Ananta Putra", "Annabighoh Syabanu Gunawan", "Arrais Mahardika Rusli", "Athaya Kaysan Hakim", "Aufa Gilang Pratama", "Bilal Abdul Aslam", "Bintang Dasilva Ibrahim", "Brilliant Alziddan Mustofa", "Denny Maulana Yusuf", "Fathir Muhammad Fadhilah", "Haikal Ahfwan", "Harry Harsya Shiddiq", "Ifan Sofyan", "Kenzie Adelio Tristan", "Khairul Walif", "Luthfirrahman Nafis Hananto", "Muhammad Al-Gaza Putra Dewian", "Muhammad Arafa Ekiyano Febrian", "Muhammad Dilfa Fattan", "Muhammad Fahriansyah", "Muhammad Fathan Toriq", "Muhammad Haikal Al Faisya", "Muhammad Najetullah", "Muhammad Raditya Fauzan", "Muhammad Waldan", "Rayhan Faiz Abdillah Hadiyanto", "Sultan Fatih Setiawan", "Zhafran Tata Hidayat"],
+            "7A Putri": ["Adara Riyanti", "Aghniya Musamma Harahap", "Ahla Amany Maulidya", "Alivia Zahratukanza", "Alya Ruby Salimah", "Ameera Syahida Ajie", "Asyifa Mahira Lubis", "Bilqis Ghaisani Ahza", "Callysta Lareina Nabiha", "Cordelia Krisna Widyantari", "Deyanna Abigail Baligha Zephania", "Fathya Caliana", "Filzah Ghaisani Fikriyah", "Indhieswara Maharani", "Kanaya Athalla Dzakiyyah", "Kawa'Iba Puti Firmansyah", "Keisha Sahila Az Zahra", "Khansa Ghina Rachmani", "Mehira Mehrnaz Multazam", "Nadiya Fajria Salsabila", "Novilly Azwan", "Putri Mutia Rahmi", "Queenisa Yumna Zahirah", "Rita Madinatul Arofah", "Saffanah Saafia Zahirah", "Shelby Sinar Islamadina", "Shira Rizkia Adara", "Siti Shofa Aulia Rahman", "Syifa Anindya", "Talita Himayatul Kamilah", "Talita Khansa Saputra", "Yukqiu Natasha Ardi", "Zivana Lay"],
+            "7B Putri": ["Aesha Bellvania Kirana", "Aira Fitriani Azzahra", "Aisyah Fahira Husna", "Alya Zahra Nabila", "Ameera Isnain Setiadi", "Aulia Zahra Ibrahim", "Azizahtun Nazwa", "Ghina Bilqis Shabreen", "Hafizhah Alimah", "Haninda Aulia Dayana", "Hilma Arifa Aulia Rosid", "Jihan Amira Karim", "Keyla Khanza Ramadhani", "Nafisa Al Mahira", "Nailatisya Aquina Salsabilla", "Nilam Maulina Anggraini", "R A Najeela Putri Widiarsa", "Rhaqueena Aleameccha Alingga", "Salsabila Zovanka", "Shakila Aulia Sakhiy", "Shifa Mumtazah", "Siti Alifia Zahra", "Siti Zahwa Naura Auni", "Siti Ziarra Nur Al-Jaelani", "Syafa Savira", "Syakilah Putri Oktavia", "Syakirah Rizqia Ramadani", "Tuhfatun Najwa", "Vinca Fitranavira Putri", "Zhafira Nur Azzahra", "Tiara Izzatunnisa", "Kinara Rahmadania", "Tsamarah Arissa Qaireen", "Muthiah Lathifah Azzahra", "Avikah Rosafitri"]
         };
 
         // Data Pertanyaan Kuesioner
         const questions = [
             {
-                id: "q1",
                 text: "Apakah kamu nyaman dan betah mondok di MBS?",
                 options: ["Betah", "Biasa saja", "Kadang tidak betah", "Tidak betah"]
             },
             {
-                id: "q2",
                 text: "Apakah kamu menyadari bahwa orang tua menitipkan kamu di MBS agar kamu bisa menjadi lebih baik?",
                 options: ["Ya, saya sadar dan ingin berterima kasih kepada orang tua", "Biasa saja", "Tidak menyadari"]
             },
             {
-                id: "q3",
                 text: "Apakah kamu merasa ada peningkatan akhlak, pengetahuan, disiplin dan ibadah dalam 4 bulan ini?",
                 options: ["Sangat meningkat", "Cukup meningkat", "Belum banyak berubah", "Justru menurun"]
             },
             {
-                id: "q4",
                 text: "Apakah guru di jam sekolah sudah menyampaikan materi pelajaran dengan jelas?",
                 options: ["Sangat jelas", "Cukup jelas", "Kadang kurang jelas", "Tidak jelas"]
             },
             {
-                id: "q5",
                 text: "Apakah kamu merasa metode guru mengajar menarik dan mudah dipahami?",
                 options: ["Sangat menarik dan mudah dipahami", "Cukup menarik", "Kadang membosankan", "Tidak menarik dan sulit dipahami"]
             },
             {
-                id: "q6",
-                text: "Apakah kamu pernah merasakan tekanan dari kakak kelas seperti perampasan, peminjaman barang secara paksa atau disuruh-suruh?",
-                options: ["Tidak Pernah", "Pernah sekali", "Pernah beberapa kali", "Sering"]
+                text: "Bagaimana hubunganmu dengan teman sekamar?",
+                options: ["Akrab", "Biasa saja", "Tidak dekat"]
             },
             {
-                id: "q7",
                 text: "Apakah kamu pernah merasa kehilangan barang pribadi misalnya: pakaian, alat tulis, atau uang?",
                 options: ["Tidak pernah", "Pernah sekali", "Beberapa kali", "Sering terjadi"]
             },
             {
-                id: "q8",
                 text: "Apakah musyrif atau musyrifah selama ini peduli terhadap kebutuhan dan kondisi kamu?",
                 options: ["Sangat peduli", "Cukup peduli", "Kadang acuh", "Tidak peduli"]
             },
             {
-                id: "q9",
                 text: "Apakah kamu merasa nyaman dan percaya untuk bercerita jika ada masalah kepada musyrif atau musyrifah?",
                 options: ["Sangat nyaman dan percaya", "Kadang nyaman", "Kurang nyaman", "Tidak nyaman sama sekali"]
             },
             {
-                id: "q10",
                 text: "Apakah OSMA bersikap adil dalam memberikan teguran atau hukuman kepada santri?",
                 options: ["Sangat adil", "Cukup adil", "Kadang tidak adil", "Tidak adil"]
             },
             {
-                id: "q11",
                 text: "Apakah kamu selalu rutin makan 3 kali setiap hari?",
                 options: ["Selalu 3 kali", "Kadang 2 kali", "Sering hanya 1 kali", "Tidak teratur"]
             },
             {
-                id: "q12",
                 text: "Apakah kamu rutin mandi minimal 2 kali dalam sehari?",
                 options: ["Selalu", "Kadang-kadang", "Jarang", "Hampir tidak pernah"]
             },
             {
-                id: "q13",
                 text: "Bagaimana menurutmu kebersihan di MBS (kamar tidur, kamar mandi, lingkungan)?",
                 options: ["Sangat bersih dan terjaga", "Cukup bersih", "Kurang bersih", "Kotor dan perlu perhatian"]
             },
             {
-                id: "q14",
                 text: "Apakah kamu pernah melihat atau mengalami bullying (perundungan seperti diganggu, diejek, dikucilkan, atau disakiti di pondok)?",
                 options: ["Tidak pernah", "Pernah melihat", "Pernah mengalami", "Sering terjadi di sekitar"]
             },
             {
-                id: "q15",
                 text: "Jika kamu melihat atau mengalami bullying, apakah kamu tahu harus melapor kepada siapa?",
                 options: ["Ya, saya tahu kepada siapa", "Takut melapor", "Tidak tahu kepada siapa"]
             },
             {
-                id: "q16",
-                text: "Apakah kamu pernah mengalami pelecehan atau melihat orang lain melakukan hal-hal yang membuat merasa tidak nyaman, takut, atau dipaksa (Contoh: disentuh di bagian tubuh pribadi, dipaksa melihat sesuatu, gambar/video tidak pantas, atau dipaksa melakukan sesuatu yang kamu tidak mau)",
+                text: "Apakah kamu pernah mengalami pelecehan atau melihat orang lain melakukan hal-hal yang membuat merasa tidak nyaman, takut, atau dipaksa (Contoh: disentuh di bagian tubuh pribadi, dipaksa melihat sesuatu, gambar/video tidak pantas, atau dipaksa melakukan sesuatu yang kamu tidak mau)?",
                 options: ["Tidak pernah", "Pernah melihat", "Pernah mengalami", "Tidak ingin menjawab"]
             },
             {
-                id: "q17",
                 text: "Apakah ada tempat, waktu, atau orang tertentu di lingkungan MBS yang secara khusus kamu hindari karena membuatmu merasa tidak aman atau takut?",
                 options: ["Tidak ada", "Ada, tapi jarang saya temui", "Ada dan saya hindari", "Ada dan membuat saya takut"]
             },
             {
-                id: "q18",
                 text: "Ketika memiliki masalah pribadi atau merasa sedih, kepada siapa biasanya kamu bercerita?",
                 options: ["Musyrif/Musyrifah", "Teman dekat", "Orang tua", "Guru sekolah", "Saya pendam sendiri"]
             },
             {
-                id: "q19",
                 text: "Program apa yang kamu rasa masih harus ditingkatkan?",
                 options: ["Kitab Kuning", "Tahfizh", "Bahasa Asing", "Pendidikan Adab", "Organisasi"]
             },
             {
-                id: "q20",
                 text: "Layanan apa yang kamu rasa masih harus ditingkatkan?",
                 options: ["Kebersihan", "Dapur", "Laundry", "Kantin"]
             }
         ];
 
         // Elemen DOM
-        const classSelect = document.getElementById('classSelect');
-        const nameSelect = document.getElementById('nameSelect');
+        const kelasSelect = document.getElementById('kelas');
+        const namaSelect = document.getElementById('nama');
         const questionsContainer = document.getElementById('questionsContainer');
         const surveyForm = document.getElementById('surveyForm');
         const submitButton = document.getElementById('submitButton');
-        const loadingIndicator = document.getElementById('loadingIndicator');
-        const messageModal = document.getElementById('messageModal');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalMessage = document.getElementById('modalMessage');
-        const closeModalButton = document.getElementById('closeModalButton');
+        const submitText = document.getElementById('submitText');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        
+        // Modal elements
+        const notificationModal = document.getElementById('notificationModal');
+        const modalContent = document.getElementById('modalContent');
+        const modalSuccess = document.getElementById('modalSuccess');
+        const modalError = document.getElementById('modalError');
+        const errorMessage = document.getElementById('errorMessage');
+        const closeErrorButton = document.getElementById('closeErrorButton');
 
-        // Fungsi untuk menampilkan pesan modal
-        function showModal(title, message) {
-            modalTitle.textContent = title;
-            modalMessage.textContent = message;
-            messageModal.classList.remove('hidden');
-        }
-
-        // Fungsi untuk menutup modal
-        function closeModal() {
-            messageModal.classList.add('hidden');
-        }
-
-        // Fungsi untuk mempopulasi dropdown kelas
-        function populateClasses() {
-            const classes = Object.keys(studentData);
-            classes.forEach(cls => {
-                const option = document.createElement('option');
-                option.value = cls;
-                option.textContent = cls;
-                classSelect.appendChild(option);
-            });
-        }
-
-        // Fungsi untuk mempopulasi dropdown nama berdasarkan kelas
-        function populateNames() {
-            const selectedClass = classSelect.value;
-            nameSelect.innerHTML = '<option value="" disabled selected>-- Pilih Nama --</option>'; // Reset
-            
-            if (selectedClass && studentData[selectedClass]) {
-                studentData[selectedClass].sort().forEach(name => { // Urutkan nama
-                    const option = document.createElement('option');
-                    option.value = name;
-                    option.textContent = name;
-                    nameSelect.appendChild(option);
-                });
-                nameSelect.disabled = false;
-            } else {
-                nameSelect.disabled = true;
-            }
-        }
-
-        // Fungsi untuk men-generate blok pertanyaan
-        function generateQuestions() {
+        // Fungsi untuk memuat pertanyaan
+        function loadQuestions() {
             questions.forEach((q, index) => {
                 const questionIndex = index + 1;
-                
-                // Buat div kontainer pertanyaan
-                // Diubah: Menambahkan border-l-4 (aksen kiri) dan bayangan lebih kuat
+                const questionId = `q${questionIndex}`;
+
+                // Kontainer untuk setiap pertanyaan
                 const questionBlock = document.createElement('div');
-                questionBlock.className = 'question-card border-l-4 border-blue-500 p-5 rounded-r-lg rounded-l-md shadow-lg bg-gray-700/80 transition-all duration-300'; 
+                questionBlock.className = 'bg-gray-800 border-l-4 border-blue-500 rounded-r-lg shadow-lg p-5 transition-all duration-300';
                 
-                // Buat teks pertanyaan
+                // Teks pertanyaan
                 const questionText = document.createElement('p');
-                questionText.className = 'text-base font-semibold text-gray-100 mb-4'; // Diubah ke tema gelap
-                questionText.innerHTML = `${questionIndex}. ${q.text}`; // <-- INI DIA BARIS YANG HILANG
+                questionText.className = 'text-lg font-semibold text-gray-100 mb-4';
+                questionText.textContent = `${questionIndex}. ${q.text}`;
                 questionBlock.appendChild(questionText);
 
-                // Buat kontainer untuk pilihan
+                // Kontainer untuk pilihan jawaban
                 const optionsContainer = document.createElement('div');
                 optionsContainer.className = 'space-y-3';
 
-                // Buat radio button untuk setiap pilihan
-                q.options.forEach(option => {
-                    const label = document.createElement('label');
-                    // Diubah: Menambahkan border transparan untuk mencegah 'lompatan' layout saat dipilih
-                    label.className = 'flex items-center p-3 rounded-lg hover:bg-gray-600 cursor-pointer transition-all duration-200 border border-transparent';
+                // Membuat radio button untuk setiap pilihan
+                q.options.forEach((option, optionIndex) => {
+                    const optionId = `${questionId}_${optionIndex}`;
                     
-                    const radio = document.createElement('input');
-                    radio.type = 'radio';
-                    radio.name = q.id;
-                    radio.value = option;
-                    radio.required = true;
-                    radio.className = 'w-5 h-5';
+                    const radioInput = document.createElement('input');
+                    radioInput.type = 'radio';
+                    radioInput.id = optionId;
+                    radioInput.name = questionId;
+                    radioInput.value = option;
+                    radioInput.className = 'custom-radio'; // Kelas kustom (tersembunyi)
 
-                    // BARU: Tambahkan event listener untuk menyorot pilihan
-                    radio.addEventListener('click', () => {
-                        // 1. Hapus sorotan dari semua pilihan di grup ini
-                        optionsContainer.querySelectorAll('label').forEach(lbl => {
-                            lbl.classList.remove('selected-label');
-                        });
-                        // 2. Tambahkan sorotan ke pilihan yang diklik
-                        label.classList.add('selected-label');
-                    });
+                    const radioLabel = document.createElement('label');
+                    radioLabel.htmlFor = optionId;
+                    radioLabel.textContent = option;
+                    radioLabel.className = 'block w-full bg-gray-700 border-2 border-gray-600 text-gray-300 rounded-lg p-3 text-left cursor-pointer transition-all duration-200 ease-in-out hover:bg-gray-600 hover:border-gray-500';
 
-                    const span = document.createElement('span');
-                    span.textContent = option;
-                    span.className = 'ml-3 text-gray-200'; // Diubah ke tema gelap
-
-                    label.appendChild(radio);
-                    label.appendChild(span);
-                    optionsContainer.appendChild(label);
+                    optionsContainer.appendChild(radioInput);
+                    optionsContainer.appendChild(radioLabel);
                 });
 
                 questionBlock.appendChild(optionsContainer);
@@ -445,93 +320,162 @@
             });
         }
 
-        // Fungsi untuk menangani submit formulir
-        async function handleSubmit(e) {
-            e.preventDefault();
-
-            // Validasi sederhana (selain 'required' HTML)
-            if (SCRIPT_URL === "MASUKKAN_URL_APPS_SCRIPT_ANDA_DI_SINI") {
-                showModal("Error Konfigurasi", "SCRIPT_URL belum diatur. Harap ikuti instruksi di dalam kode HTML untuk menghubungkan ke Google Apps Script.");
-                return;
-            }
-
-            // Tampilkan loading, nonaktifkan tombol
-            submitButton.disabled = true;
-            loadingIndicator.classList.remove('hidden');
-
-            // Kumpulkan data
-            const formData = new FormData(surveyForm);
-            const data = {
-                timestamp: new Date().toISOString(),
-                kelas: formData.get('kelas'),
-                nama: formData.get('nama'),
-            };
-
-            // Tambahkan jawaban pertanyaan
-            questions.forEach(q => {
-                data[q.id] = formData.get(q.id);
-            });
-
-            // Kirim data ke Google Apps Script
-            try {
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'cors', // Diperlukan untuk Apps Script
-                    cache: 'no-cache',
-                    redirect: 'follow',
-                    body: JSON.stringify(data)
+        // Fungsi untuk memperbarui dropdown nama berdasarkan kelas
+        function updateNamaDropdown() {
+            const selectedKelas = kelasSelect.value;
+            const santriList = dataSantri[selectedKelas] || [];
+            
+            namaSelect.innerHTML = '<option value="">-- Pilih Nama --</option>'; // Reset
+            
+            if (santriList.length > 0) {
+                santriList.sort((a, b) => a.localeCompare(b)); // Sortir nama A-Z
+                santriList.forEach(nama => {
+                    const option = document.createElement('option');
+                    option.value = nama;
+                    option.textContent = nama;
+                    namaSelect.appendChild(option);
                 });
-
-                const result = await response.json();
-
-                if (result.status === 'success') {
-                    showModal("Survei Terkirim", "Terima kasih! Jawaban Anda telah berhasil dicatat.");
-                    surveyForm.reset(); // Reset formulir
-
-                    // BARU: Hapus semua sorotan dari pilihan yang dipilih
-                    document.querySelectorAll('.selected-label').forEach(label => {
-                        label.classList.remove('selected-label');
-                    });
-
-                    populateNames(); // Reset dropdown nama
-                    
-                    // Gulir ke atas untuk pengguna berikutnya
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-
-                    // Tutup modal secara otomatis setelah 2.5 detik
-                    setTimeout(() => {
-                        closeModal();
-                    }, 2500); // 2.5 detik
-
-                } else {
-                    throw new Error(result.message || 'Terjadi kesalahan yang tidak diketahui.');
-                }
-
-            } catch (error) {
-                console.error('Error submitting form:', error);
-                showModal("Gagal Mengirim", `Terjadi kesalahan saat mengirim jawaban. Silakan coba lagi. Error: ${error.message}`);
-            } finally {
-                // Sembunyikan loading, aktifkan tombol
-                submitButton.disabled = false;
-                loadingIndicator.classList.add('hidden');
+                namaSelect.disabled = false;
+            } else {
+                namaSelect.disabled = true;
             }
         }
 
-        // Inisialisasi Aplikasi
-        document.addEventListener('DOMContentLoaded', () => {
-            // Set tahun di footer
-            document.getElementById('currentYear').textContent = new Date().getFullYear();
-            
-            // Inisialisasi dropdown dan pertanyaan
-            populateClasses();
-            generateQuestions();
+        // Fungsi untuk menampilkan modal
+        function showModal(type, message = "") {
+            notificationModal.classList.remove('hidden');
+            setTimeout(() => {
+                notificationModal.classList.add('opacity-100');
+                modalContent.classList.add('scale-100', 'opacity-100');
+            }, 10);
 
-            // Tambahkan event listener
-            classSelect.addEventListener('change', populateNames);
+            if (type === 'success') {
+                modalSuccess.classList.remove('hidden');
+                modalError.classList.add('hidden');
+            } else {
+                modalSuccess.classList.add('hidden');
+                modalError.classList.remove('hidden');
+                errorMessage.textContent = message || "Gagal mengirim jawaban. Silakan periksa koneksi Anda dan coba lagi.";
+            }
+        }
+
+        // Fungsi untuk menyembunyikan modal
+        function hideModal() {
+            modalContent.classList.remove('scale-100', 'opacity-100');
+            notificationModal.classList.remove('opacity-100');
+            setTimeout(() => {
+                notificationModal.classList.add('hidden');
+            }, 300);
+        }
+        
+        // Fungsi untuk me-reset formulir
+        function resetForm() {
+            surveyForm.reset();
+            updateNamaDropdown(); // Mereset dropdown nama
+            // Mengembalikan style label radio button ke default
+            document.querySelectorAll('input[type="radio"] + label').forEach(label => {
+                label.classList.remove('bg-blue-600', 'border-blue-700', 'text-white');
+                label.classList.add('bg-gray-700', 'border-gray-600', 'text-gray-300');
+            });
+        }
+
+        // Fungsi untuk validasi formulir
+        function validateForm() {
+            // Validasi data santri
+            if (kelasSelect.value === "") {
+                showModal('error', 'Silakan pilih kelas Anda.');
+                return false;
+            }
+            if (namaSelect.value === "") {
+                showModal('error', 'Silakan pilih nama Anda.');
+                return false;
+            }
+
+            // Validasi semua pertanyaan sudah dijawab
+            for (let i = 1; i <= questions.length; i++) {
+                const questionName = `q${i}`;
+                const answer = document.querySelector(`input[name="${questionName}"]:checked`);
+                if (!answer) {
+                    showModal('error', `Harap jawab pertanyaan nomor ${i}.`);
+                    // Scroll ke pertanyaan yang belum dijawab
+                    document.querySelector(`input[name="${questionName}"]`).closest('.bg-gray-800').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // Fungsi untuk menangani pengiriman formulir
+        async function handleSubmit(e) {
+            e.preventDefault();
+            if (!validateForm()) return;
+
+            // Langsung scroll ke atas dan tampilkan loading
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            submitText.classList.add('hidden');
+            loadingSpinner.classList.remove('hidden');
+            submitButton.disabled = true;
+            submitButton.classList.add('opacity-75', 'cursor-not-allowed');
+
+            if (SCRIPT_URL === "MASUKKAN_URL_WEB_APP_ANDA_DI_SINI") {
+                showModal('error', 'Konfigurasi SCRIPT_URL belum diisi. Harap hubungi administrator.');
+                submitText.classList.remove('hidden');
+                loadingSpinner.classList.add('hidden');
+                submitButton.disabled = false;
+                submitButton.classList.remove('opacity-75', 'cursor-not-allowed');
+                return;
+            }
+            
+            const formData = new FormData(surveyForm);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Menambahkan timestamp dari sisi klien (akan dikonversi ke WIB di server)
+            data.timestamp = new Date().toISOString();
+
+            try {
+                // *** PERBAIKAN: Mengubah 'cors' menjadi 'no-cors' ***
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // <-- INI PERBAIKANNYA
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                // KARENA 'no-cors', kita tidak bisa membaca 'response.json()'.
+                // Kita asumsikan pengiriman berhasil jika 'fetch' tidak melempar error.
+                showModal('success');
+                // Reset formulir dan sembunyikan modal setelah 2.5 detik
+                setTimeout(() => {
+                    hideModal();
+                    resetForm();
+                }, 2500);
+
+            } catch (error) {
+                // Error ini sekarang kemungkinan besar adalah error jaringan (misal: offline)
+                console.error('Error submitting form:', error);
+                showModal('error', `Terjadi kesalahan: ${error.message}. Periksa koneksi internet Anda.`);
+            } finally {
+                // Mengembalikan tombol ke keadaan semula
+                submitText.classList.remove('hidden');
+                loadingSpinner.classList.add('hidden');
+                submitButton.disabled = false;
+                submitButton.classList.remove('opacity-75', 'cursor-not-allowed');
+            }
+        }
+
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            loadQuestions();
+            kelasSelect.addEventListener('change', updateNamaDropdown);
             surveyForm.addEventListener('submit', handleSubmit);
-            closeModalButton.addEventListener('click', closeModal);
+            closeErrorButton.addEventListener('click', hideModal);
         });
 
     </script>
+
 </body>
 </html>
